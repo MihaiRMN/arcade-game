@@ -27,12 +27,22 @@
         <span class="hud-label">PRESTIGE</span>
         <span class="hud-val" id="hud-prestige">⭐ P1</span>
     </div>
+    <div class="hud-row" id="hud-next-event-row">
+        <span class="hud-label" id="hud-next-event-label">BOSS IN</span>
+        <span class="hud-val" id="hud-next-event-val" style="color:#ef4444">3:00</span>
+    </div>
 </div>
 
 <!-- ══ ELEMENT BAR (top-center) ══ -->
 <div id="elem-bar" class="hidden">
     <div id="elem-label">ELEMENT POINTS</div>
     <div id="elem-progress-wrap"><div id="elem-progress"></div></div>
+    <!-- ultra mass progress (shown when ultra is possible) -->
+    <div id="ultra-mass-wrap" class="hidden">
+        <div id="ultra-mass-label">⚡ ULTRA MASS</div>
+        <div id="elem-progress-wrap"><div id="ultra-mass-progress"></div></div>
+        <div id="ultra-mass-count">0 / 500</div>
+    </div>
     <div id="elem-count">0 / 50</div>
 </div>
 

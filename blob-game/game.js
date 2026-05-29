@@ -90,6 +90,9 @@ const BOT_NAMES = [
   'Ember_Fox','Glacius','Strykos','Umbrix','Photon'
 ];
 
+// ── SOUND HELPER ─────────────────────────────────────────────────
+function snd(name) { try { if(typeof ArcadeSound!=='undefined') ArcadeSound.play(name); } catch(e){} }
+
 // ── SPATIAL GRID ──────────────────────────────────────────────────
 const grid = {};
 function gKey(x,y) { return `${Math.floor(x/CELL_SIZE)},${Math.floor(y/CELL_SIZE)}`; }
@@ -620,7 +623,7 @@ function updateBoss(dt) {
     if(bossTimer<=0){spawnBoss();bossTimer=180000;}
     return;
   }
-  if(!boss.enraged){ boss.enrageTimer-=dt; if(boss.enrageTimer<=0){ boss.enraged=true; boss.mass=Math.max(boss.mass,1000); boss.speed=4.5; showBanner('💢 BOSS ENRAGED!',3000); triggerShake(12,500); } }
+  // Enrage handled by HP (see hitBoss)
   // Move toward nearest blob
   let target=null,bd=Infinity;
   for(const b of [player,...bots]) if(b&&!b.dead){const d=dist2(boss,b);if(d<bd){bd=d;target=b;}}
@@ -630,24 +633,27 @@ function updateBoss(dt) {
 }
 function spawnBoss(){
   const form=FORM_KEYS[rndInt(1,5)];
-  boss={ x:rnd(200,WORLD-200), y:rnd(200,WORLD-200), mass:500, hp:3, maxHp:3, form, enraged:false, enrageTimer:120000, speed:2.8, abCD:0, abTimer:0, trailPts:[], ep:0, invisible:false, dead:false, name:'BOSS', isBot:true, _lastHit:0 };
+  boss={ x:rnd(200,WORLD-200), y:rnd(200,WORLD-200), mass:500, hp:3, maxHp:3, form, enraged:false, speed:2.8, abCD:0, abTimer:0, trailPts:[], ep:0, invisible:false, dead:false, name:'BOSS', isBot:true, _lastHit:0 };
   showBanner(`👹 BOSS ${FORMS[form].name.toUpperCase()} APPEARED!`,4000);
   showGameFlash('rgba(239,68,68,0.3)',600);
   triggerShake(10,500);
+  snd('boss');
   updateBossHPBar();
 }
 function hitBoss(attacker){
   const now=Date.now();
   if(now-boss._lastHit<600) return;
   boss._lastHit=now; boss.hp--; boss.mass=Math.max(200,boss.mass*0.85);
+  snd('enemy_hit');
   spawnN(boss.x,boss.y,fPType(boss.form),10); triggerShake(6,300);
   if(attacker.isPlayer){ player.mass+=30; player.ep=(player.ep||0)+20; addFloat(player.x,player.y,'+30','#4ade80'); }
+  if(boss.hp===1&&!boss.enraged){ boss.enraged=true; boss.mass=Math.max(boss.mass,1000); boss.speed=4.5; showBanner('💢 BOSS ENRAGED!',3000); triggerShake(12,500); snd('boss_warning'); }
   updateBossHPBar();
   if(boss.hp<=0) killBoss(attacker);
 }
 function killBoss(killer){
   spawnN(boss.x,boss.y,'evolve',30); spawnN(boss.x,boss.y,fPType(boss.form),20);
-  triggerShake(18,700); showBanner('💀 BOSS DEFEATED!',4000); showGameFlash('rgba(255,200,0,0.35)',500);
+  triggerShake(18,700); showBanner('💀 BOSS DEFEATED!',4000); showGameFlash('rgba(255,200,0,0.35)',500); snd('jackpot');
   for(let i=0;i<20;i++){ const a=(i/20)*Math.PI*2,r=rnd(30,130); spawnCrystalAt(boss.x+Math.cos(a)*r,boss.y+Math.sin(a)*r,'rare'); }
   if(killer.isPlayer){
     player.mass+=200; addFloat(player.x,player.y,'+200 MASS!','#ffd700');
@@ -701,12 +707,13 @@ function updateVortex(dt){
 function spawnVortex(){
   vortex={x:rnd(300,WORLD-300),y:rnd(300,WORLD-300),radius:400,phase:'warning',timer:10000};
   showBanner('⚠️ VORTEX FORMING!',8000);
+  snd('boss_warning');
 }
 function explodeVortex(){
   const all=[player,...bots].filter(b=>b&&!b.dead);
   for(const b of all){const dx=b.x-vortex.x,dy=b.y-vortex.y,d=Math.sqrt(dx*dx+dy*dy)||1;if(d<vortex.radius){const f=80*(1-d/vortex.radius);b.x=clamp(b.x+dx/d*f,50,WORLD-50);b.y=clamp(b.y+dy/d*f,50,WORLD-50);}}
   for(let i=0;i<30;i++){const a=(i/30)*Math.PI*2,r=rnd(50,200);spawnCrystalAt(vortex.x+Math.cos(a)*r,vortex.y+Math.sin(a)*r,'rare');}
-  spawnN(vortex.x,vortex.y,'evolve',40); triggerShake(20,800); showBanner('💥 VORTEX EXPLODED!',3000); showGameFlash('rgba(0,200,255,0.4)',500);
+  spawnN(vortex.x,vortex.y,'evolve',40); triggerShake(20,800); showBanner('💥 VORTEX EXPLODED!',3000); showGameFlash('rgba(0,200,255,0.4)',500); snd('airstrike');
   vortex=null;
 }
 
@@ -725,6 +732,7 @@ function updateMeteors(dt){
 function startMeteorShower(){
   meteorShowerActive=true; meteorShowerCount=rndInt(10,15); meteorShowerSpawnT=0;
   showBanner('☄️ METEOR SHOWER INCOMING!',5000);
+  snd('wave_start');
 }
 function spawnMeteor(){
   meteors.push({targetX:rnd(100,WORLD-100),targetY:rnd(100,WORLD-100),warnTimer:2000,impacted:false,impactTimer:800});
@@ -732,7 +740,7 @@ function spawnMeteor(){
 function impactMeteor(m){
   m.impacted=true; m.impactTimer=800;
   for(let i=0;i<5;i++){const a=(i/5)*Math.PI*2,r=rnd(20,60);spawnCrystalAt(m.targetX+Math.cos(a)*r,m.targetY+Math.sin(a)*r,'rare');}
-  triggerShake(8,300); showGameFlash('rgba(255,100,0,0.22)',200); spawnN(m.targetX,m.targetY,'fire',15);
+  triggerShake(8,300); showGameFlash('rgba(255,100,0,0.22)',200); spawnN(m.targetX,m.targetY,'fire',15); snd('shot_fire');
   const all=[player,...bots].filter(b=>b&&!b.dead);
   for(const b of all){
     if(dist(b,{x:m.targetX,y:m.targetY})<80){
@@ -767,7 +775,7 @@ function eatCrystalsNear(blob){
 function eatCrystal(blob,c){
   if(c.eaten) return;
   blob.mass+=c.mass; spawnN(c.x,c.y,fPType(c.form||'neutru'),4);
-  if(blob.isPlayer){ incrementQuest('crystals_eaten',1); }
+  if(blob.isPlayer){ incrementQuest('crystals_eaten',1); snd('crystal'); }
   if(c.type==='chaos'){
     spawnN(c.x,c.y,'evolve',6);
     const nf=FORM_KEYS[rndInt(1,5)];
@@ -789,6 +797,7 @@ function checkPlayerEvo(){
 function triggerEvo(blob,newForm){
   blob.form=newForm; blob.ep=0; spawnN(blob.x,blob.y,'evolve',30);
   if(!blob.isPlayer) return;
+  snd('levelup');
   const fd=FORMS[newForm];
   document.getElementById('evo-form-name').textContent=fd.name+' '+fd.emoji;
   const fl=document.getElementById('evo-flash');
@@ -822,6 +831,7 @@ function finishUltraEvo(){
   setTimeout(()=>fl.classList.add('hidden'),2200);
   document.getElementById('ability-bar').style.borderColor=fd.color+'90';
   incrementQuest('ultra_evolved',1); checkAch('ultra_evolved');
+  snd('evolve');
   ultraEvoTarget=null;
 }
 
@@ -876,6 +886,7 @@ function completeQuest(q){
   localStorage.setItem('portal_xp',portalXP);
   if(player&&!player.dead) addFloat(canvas.width/2/camera.zoom+camera.x,canvas.height/2/camera.zoom+camera.y-80,`✓ QUEST! +${q.reward.coins}🪙 +${xp}XP`,'#ffd700');
   showBanner(`✅ QUEST DONE! +${q.reward.coins}🪙 +${xp}XP`,3500);
+  snd('success');
   updateQuestPanel();
 }
 function updateQuestPanel(){
@@ -931,6 +942,7 @@ function checkAch(id){
   const portalXP=parseInt(localStorage.getItem('portal_xp')||'0')+xp;
   localStorage.setItem('portal_xp',portalXP);
   achPopupQueue.push({...ach,xpActual:xp});
+  snd('achievement');
 }
 function checkFormsAch(){
   const unlocked=JSON.parse(localStorage.getItem('blobevo_forms_unlocked')||'["neutru"]');
@@ -1049,7 +1061,7 @@ function canEat(eater,prey){
   if(WEAKNESS[ef]===pf) return eater.mass>prey.mass*1.5;
   return eater.mass>prey.mass*0.88;
 }
-function eatBlob(eater,prey){ eater.mass+=prey.mass*0.65; eater.ep=(eater.ep||0)+5; spawnN(prey.x,prey.y,fPType(prey.form),14); if(eater.isPlayer) addFloat(prey.x,prey.y,`+${Math.floor(prey.mass*0.65)}`,'#4ade80'); }
+function eatBlob(eater,prey){ eater.mass+=prey.mass*0.65; eater.ep=(eater.ep||0)+5; spawnN(prey.x,prey.y,fPType(prey.form),14); if(eater.isPlayer){ addFloat(prey.x,prey.y,`+${Math.floor(prey.mass*0.65)}`,'#4ade80'); snd('eat'); } }
 function respawnBot(){
   const form=FORM_KEYS[rndInt(0,5)];
   const b=mkBlob(rnd(100,WORLD-100),rnd(100,WORLD-100),rnd(8,22),form,false);
@@ -1067,6 +1079,8 @@ function playerDead(killedBy){
   const g=(parseInt(localStorage.getItem('blobevo_games'))||0)+1;
   localStorage.setItem('blobevo_games',g);
   localStorage.setItem('blobevo_total_time',(parseInt(localStorage.getItem('blobevo_total_time'))||0)+Math.floor(elapsed/1000));
+  localStorage.setItem('blobevo_total_time_ms',(parseInt(localStorage.getItem('blobevo_total_time_ms'))||0)+elapsed);
+  snd('gameover');
   if(elapsed>=300000) localStorage.setItem('blobevo_survived_5min','1');
   if(elapsed>=600000) checkAch('untouchable');
   if(player.form!=='neutru') localStorage.setItem('blobevo_best_form',player.form);
@@ -1427,6 +1441,47 @@ function updateHUD(){
   // Ultra evo available
   const canUltra=ULTRA_MAP[player.form]&&player.mass>=500&&ultraEvoTimer<=0;
   document.getElementById('ultra-avail').classList.toggle('hidden',!canUltra);
+
+  // Ultra mass progress bar
+  const ultraWrap=document.getElementById('ultra-mass-wrap');
+  const ultraTarget=ULTRA_MAP[player.form];
+  if(ultraTarget&&FORMS[player.form].tier===1&&!canUltra){
+    ultraWrap.classList.remove('hidden');
+    const massPct=Math.min(100,player.mass/500*100);
+    document.getElementById('ultra-mass-progress').style.width=massPct+'%';
+    document.getElementById('ultra-mass-count').textContent=`${Math.floor(player.mass)} / 500`;
+  } else { ultraWrap.classList.add('hidden'); }
+
+  // Next event countdown
+  const evRow=document.getElementById('hud-next-event-row');
+  const evLabel=document.getElementById('hud-next-event-label');
+  const evVal=document.getElementById('hud-next-event-val');
+  evRow.classList.remove('hidden');
+  if(boss){
+    evLabel.textContent='BOSS HP';
+    evVal.textContent='❤️'.repeat(boss.hp);
+    evVal.style.color='#ef4444';
+  } else if(vortex){
+    evLabel.textContent='VORTEX';
+    evVal.textContent=fmtT(Math.max(0,vortex.timer));
+    evVal.style.color='#00cfff';
+  } else if(meteorShowerActive){
+    evLabel.textContent='METEORS';
+    evVal.textContent=meteorShowerCount>0?meteorShowerCount+' LEFT':'ENDING';
+    evVal.style.color='#ff6600';
+  } else {
+    // Find closest upcoming event
+    const events=[
+      {label:'BOSS IN',  t:bossTimer,   color:'#ef4444'},
+      {label:'VORTEX IN',t:vortexTimer, color:'#00cfff'},
+      {label:'METEOR IN',t:meteorTimer, color:'#ff6600'},
+    ];
+    events.sort((a,b)=>a.t-b.t);
+    const next=events[0];
+    evLabel.textContent=next.label;
+    evVal.textContent=fmtT(Math.max(0,next.t));
+    evVal.style.color=next.color;
+  }
 
   // Leaderboard HUD
   const all=[{name:nickname,mass:player.mass,form:player.form,me:true},...bots.map(b=>({name:b.name,mass:b.mass,form:b.form,me:false}))];
