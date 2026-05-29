@@ -1,0 +1,45 @@
+{
+  "name": "ARCADE PORTAL",
+  "short_name": "ARCADE",
+  "description": "6 handcrafted browser games — 1 unified identity — infinite competition. Play Snake, Ultra 2048, Void Shift, Blob Evolution, Bingo and Tower Rush.",
+  "start_url": "/arcade-game/game-portal/index.html?source=pwa",
+  "scope": "/arcade-game/game-portal/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#050510",
+  "theme_color": "#6366f1",
+  "lang": "en",
+  "categories": ["games", "entertainment"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "🐍 Snake",
+      "url": "/arcade-game/Snake-Game/index.html",
+      "description": "Play Snake"
+    },
+    {
+      "name": "🔢 Ultra 2048",
+      "url": "/arcade-game/2048-game/index.html",
+      "description": "Play Ultra 2048"
+    },
+    {
+      "name": "🧬 Blob Evolution",
+      "url": "/arcade-game/blob-game/index.html",
+      "description": "Play Blob Evolution"
+    }
+  ]
+}

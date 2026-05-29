@@ -3288,6 +3288,147 @@ html[data-daymode="true"] .wp-bar-wrap {
     background: rgba(0,0,0,0.06);
 }
 
+/* ══════════════════════════════════════════════════════
+   PWA INSTALL BUTTON + MODAL
+══════════════════════════════════════════════════════ */
+#pwa-install-btn {
+    background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(168,85,247,0.2));
+    border: 1px solid rgba(99,102,241,0.5);
+    border-radius: var(--radius-sm);
+    color: var(--accent1);
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all var(--transition);
+}
+#pwa-install-btn:hover {
+    background: linear-gradient(135deg, rgba(99,102,241,0.35), rgba(168,85,247,0.35));
+    box-shadow: 0 0 16px var(--glow);
+    transform: translateY(-1px);
+}
+@keyframes pwaPulse {
+    0%, 100% { box-shadow: 0 0 8px var(--glow); }
+    50%       { box-shadow: 0 0 20px var(--glow), 0 0 40px var(--glow2); }
+}
+.pwa-pulse { animation: pwaPulse 2s ease-in-out infinite; }
+
+/* Modal overlay */
+#pwa-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(8px);
+}
+#pwa-modal.hidden { display: none !important; }
+
+#pwa-modal-box {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    padding: 40px 36px;
+    max-width: 380px;
+    width: 92%;
+    text-align: center;
+    box-shadow: 0 0 80px var(--glow), 0 0 160px var(--glow2);
+    animation: fadeSlideUp 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    position: relative;
+    overflow: hidden;
+}
+#pwa-modal-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--grad);
+}
+
+#pwa-modal-icon {
+    font-size: 52px;
+    margin-bottom: 12px;
+    animation: dailyFloat 2s ease-in-out infinite;
+}
+#pwa-modal-title {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    background: var(--grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+}
+#pwa-modal-desc {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    letter-spacing: 0.5px;
+    margin-bottom: 24px;
+}
+#pwa-modal-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 28px;
+    text-align: left;
+}
+.pwa-step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+}
+.pwa-step-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--grad);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+#pwa-modal-btns { display: flex; flex-direction: column; gap: 10px; }
+#pwa-install-confirm {
+    padding: 14px;
+    background: var(--grad);
+    border: none;
+    border-radius: var(--radius-sm);
+    color: #fff;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 0 20px var(--glow);
+}
+#pwa-install-confirm:hover { opacity: 0.88; transform: scale(1.03); box-shadow: 0 0 32px var(--glow); }
+#pwa-install-cancel {
+    padding: 10px;
+    background: transparent;
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+#pwa-install-cancel:hover { border-color: var(--accent1); color: var(--accent1); }
+
 /* ── Portal toasts ── */
 html[data-daymode="true"] .portal-toast {
     background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,248,230,0.95));

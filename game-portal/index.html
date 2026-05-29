@@ -2,8 +2,28 @@
 <html lang="en" data-theme="galaxy">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARCADE PORTAL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>ARCADE PORTAL — 6 Games · 1 Identity</title>
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ARCADE">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+
+    <!-- SEO / Social -->
+    <meta name="description" content="6 handcrafted browser games — Snake, Ultra 2048, Void Shift, Blob Evolution, Bingo and Tower Rush. 1 unified identity. Infinite competition.">
+    <meta property="og:title" content="ARCADE PORTAL">
+    <meta property="og:description" content="6 games. 1 identity. Infinite competition. Play now!">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="ARCADE PORTAL">
+    <meta name="twitter:description" content="6 handcrafted browser games. Play free!">
+
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -52,6 +72,7 @@
         </div>
         <button id="nav-hamburger" onclick="toggleMobileNav()">☰</button>
         <div id="nav-player">
+            <button id="pwa-install-btn" class="hidden" title="Install as App" onclick="triggerPWAInstall()">📲 INSTALL</button>
             <button id="mute-btn" title="Toggle sound" onclick="toggleNavMute()">🔊</button>
             <button id="daynight-btn" title="Toggle Day / Night">🌙</button>
             <div id="notif-wrap">
@@ -592,8 +613,71 @@
     <button class="nav-btn" data-page="settings"     onclick="mobileNavGo('settings')">⚙️ SETTINGS</button>
 </div>
 
+<!-- PWA Install Modal -->
+<div id="pwa-modal" class="hidden">
+    <div id="pwa-modal-box">
+        <div id="pwa-modal-icon">📲</div>
+        <div id="pwa-modal-title">INSTALL ARCADE</div>
+        <div id="pwa-modal-desc">Add ARCADE PORTAL to your home screen for instant access — works offline, no browser bar, loads instantly!</div>
+        <div id="pwa-modal-steps">
+            <div class="pwa-step"><span class="pwa-step-num">1</span><span>Tap the button below</span></div>
+            <div class="pwa-step"><span class="pwa-step-num">2</span><span>Select "Add to Home Screen"</span></div>
+            <div class="pwa-step"><span class="pwa-step-num">3</span><span>Open ARCADE like a real app!</span></div>
+        </div>
+        <div id="pwa-modal-btns">
+            <button id="pwa-install-confirm">⚡ INSTALL NOW</button>
+            <button id="pwa-install-cancel">Maybe later</button>
+        </div>
+    </div>
+</div>
+
 <script src="sound-engine.js"></script>
 <script src="background.js"></script>
 <script src="portal.js"></script>
+
+<!-- Service Worker Registration -->
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/arcade-game/game-portal/sw.js', { scope: '/arcade-game/game-portal/' })
+            .then(reg => console.log('[SW] Registered, scope:', reg.scope))
+            .catch(err => console.warn('[SW] Registration failed:', err));
+    });
+}
+
+// PWA Install prompt
+let _pwaPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    _pwaPrompt = e;
+    const btn = document.getElementById('pwa-install-btn');
+    if (btn) { btn.classList.remove('hidden'); btn.classList.add('pwa-pulse'); }
+});
+window.addEventListener('appinstalled', () => {
+    const btn = document.getElementById('pwa-install-btn');
+    if (btn) btn.classList.add('hidden');
+    _pwaPrompt = null;
+    if (typeof showPortalToast === 'function')
+        showPortalToast('ARCADE installed! Find it on your home screen 🎉', '📲', '#6366f1');
+});
+function triggerPWAInstall() {
+    document.getElementById('pwa-modal').classList.remove('hidden');
+}
+document.addEventListener('DOMContentLoaded', () => {
+    const confirmBtn = document.getElementById('pwa-install-confirm');
+    const cancelBtn  = document.getElementById('pwa-install-cancel');
+    if (confirmBtn) confirmBtn.addEventListener('click', async () => {
+        document.getElementById('pwa-modal').classList.add('hidden');
+        if (_pwaPrompt) {
+            _pwaPrompt.prompt();
+            const { outcome } = await _pwaPrompt.userChoice;
+            if (outcome === 'accepted') _pwaPrompt = null;
+        }
+    });
+    if (cancelBtn) cancelBtn.addEventListener('click', () => {
+        document.getElementById('pwa-modal').classList.add('hidden');
+    });
+});
+</script>
 </body>
 </html>
