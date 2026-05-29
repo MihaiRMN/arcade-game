@@ -589,6 +589,22 @@ function startWave() {
     setTimeout(() => playSound('boss_warning'), 400);
   }
 
+  // Wave announcement banner
+  {
+    const isBoss     = currentWave === 10;
+    const isMidBoss  = currentWave === 5;
+    const label      = `LEVEL ${currentLevel} · WAVE ${currentWave}/10`;
+    const title      = isBoss    ? `💀 BOSS WAVE!`
+                     : isMidBoss ? `👹 MINI BOSS INCOMING!`
+                     : `⚔️ WAVE ${currentWave}`;
+    const sub        = isBoss    ? 'Elemental Lord approaches...'
+                     : isMidBoss ? 'Mini Boss with support!'
+                     : `${waveEnemiesLeft} enemies incoming`;
+    const color      = isBoss ? '#ef4444' : isMidBoss ? '#f97316' : '#4ade80';
+    const glow       = isBoss ? 'rgba(239,68,68,0.5)' : isMidBoss ? 'rgba(249,115,22,0.5)' : 'rgba(74,222,128,0.4)';
+    showWaveAnnounce(label, title, sub, color, glow);
+  }
+
   // Disable merge mode during wave
   if (mergeMode) toggleMergeMode();
 
@@ -2452,6 +2468,27 @@ function checkSynergy(enemy, attackerType, baseDmg, now) {
 
   if (enemy.hp <= 0 && enemy.alive) killEnemy(enemy, now);
   return bonus;
+}
+
+// ── Wave Announcement Banner ──────────────────────────────
+let _wannTimer = null;
+function showWaveAnnounce(label, title, sub, color, glow) {
+  const el = document.getElementById('wave-announce');
+  if (!el) return;
+  if (_wannTimer) { clearTimeout(_wannTimer); _wannTimer = null; }
+  el.style.setProperty('--wann-color', color);
+  el.style.setProperty('--wann-glow', glow);
+  el.innerHTML = `<div class="wann-label">${label}</div>
+<div class="wann-title">${title}</div>
+<div class="wann-sub">${sub}</div>`;
+  el.classList.remove('hidden', 'wann-out');
+  void el.offsetWidth; // force reflow
+  el.classList.add('wann-in');
+  _wannTimer = setTimeout(() => {
+    el.classList.remove('wann-in');
+    el.classList.add('wann-out');
+    _wannTimer = setTimeout(() => el.classList.add('hidden'), 380);
+  }, 2200);
 }
 
 // ── Wave Preview ──────────────────────────────────────────

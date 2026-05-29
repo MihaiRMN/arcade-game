@@ -50,6 +50,7 @@
             <button class="nav-btn" data-page="settings">⚙️ SETTINGS</button>
         </div>
         <div id="nav-player">
+            <button id="mute-btn" title="Toggle sound" onclick="toggleNavMute()">🔊</button>
             <button id="daynight-btn" title="Toggle Day / Night">🌙</button>
             <div id="notif-wrap">
                 <button id="notif-bell" onclick="toggleNotifDropdown()">🔔<span id="notif-badge" class="notif-badge hidden">0</span></button>
@@ -78,6 +79,9 @@
 
         <!-- SEASONAL BANNER -->
         <div id="seasonal-banner" class="hidden"></div>
+
+        <!-- WEEKLY CROSS-GAME EVENT BANNER -->
+        <div id="weekly-event-banner" class="hidden"></div>
 
         <!-- EVENT BANNER -->
         <div id="event-section" class="hidden">
@@ -333,6 +337,7 @@
             <button class="ach-filter-btn" data-cat="void">⚡ VOID SHIFT</button>
             <button class="ach-filter-btn" data-cat="blob">🧬 BLOB EVO</button>
             <button class="ach-filter-btn" data-cat="bingo">🎰 BINGO</button>
+            <button class="ach-filter-btn" data-cat="tower">🏰 TOWER</button>
         </div>
         <div id="ach-grid"></div>
     </div>
@@ -549,6 +554,7 @@
     </div>
 </div>
 
+<script src="sound-engine.js"></script>
 <script src="background.js"></script>
 <script src="portal.js"></script>
 </body>

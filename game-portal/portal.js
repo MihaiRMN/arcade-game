@@ -91,6 +91,36 @@ const ACHIEVEMENTS = [
 
     // ── GLOBAL (5-game) ────────────────────────────────────
     { id: 'g_penta', cat: 'global', icon: '🌟', name: 'Penta Player',   desc: 'Play all 5 arcade games at least once', xp: 250, rarity: 'epic' },
+
+    // ── TOWER RUSH ─────────────────────────────────────────
+    { id: 't_wave5',    cat: 'tower', icon: '🏰', name: 'First Stand',    desc: 'Survive Wave 5 in Tower Rush',                     xp: 100,  rarity: 'uncommon'  },
+    { id: 't_wave15',   cat: 'tower', icon: '⚔️', name: 'Wave 15',        desc: 'Survive 15 waves in Tower Rush',                   xp: 400,  rarity: 'epic'      },
+    { id: 't_no_leak',  cat: 'tower', icon: '🛡️', name: 'Impenetrable',   desc: 'Complete 10 waves without base taking damage',      xp: 500,  rarity: 'epic'      },
+    { id: 't_100kills', cat: 'tower', icon: '💀', name: 'Centurion',      desc: 'Reach 100 total enemy kills in Tower Rush',         xp: 150,  rarity: 'rare'      },
+    { id: 't_boss',     cat: 'tower', icon: '👹', name: 'Boss Slayer',    desc: 'Kill your first boss in Tower Rush',                xp: 200,  rarity: 'rare'      },
+
+    // ── NEW GLOBAL ─────────────────────────────────────────
+    { id: 'g_sound_master',  cat: 'global', icon: '🔊', name: 'Sound Master',  desc: 'Adjust the volume 10 times',                  xp: 50,   rarity: 'common'    },
+    { id: 'g_stats_nerd',    cat: 'global', icon: '📊', name: 'Stats Nerd',    desc: 'Visit the Stats page 20 times',               xp: 100,  rarity: 'uncommon'  },
+    { id: 'g_event_chaser',  cat: 'global', icon: '🎪', name: 'Event Chaser',  desc: 'Play during 3 different weekly events',       xp: 300,  rarity: 'rare'      },
+    { id: 'g_shop_addict',   cat: 'global', icon: '🛒', name: 'Shop Addict',   desc: 'Buy 20 items from the Portal Shop',           xp: 300,  rarity: 'rare'      },
+
+    // ── NEW SNAKE ──────────────────────────────────────────
+    { id: 's_speed_demon',   cat: 'snake', icon: '💨', name: 'Speed Demon',   desc: 'Score 200 in Time Attack mode',               xp: 300,  rarity: 'epic'      },
+    { id: 's_untouchable',   cat: 'snake', icon: '🧊', name: 'Untouchable',   desc: 'Complete a Snake game without any power-ups', xp: 200,  rarity: 'rare'      },
+
+    // ── NEW ULTRA 2048 ─────────────────────────────────────
+    { id: 'u_prestige_3',    cat: 'ultra', icon: '✨', name: 'Prestige Master', desc: 'Reach Prestige 3 in Ultra 2048',             xp: 1000, rarity: 'legendary' },
+    { id: 'u_tile_god',      cat: 'ultra', icon: '🌟', name: 'Tile God',        desc: 'Reach tile value 65536 in Ultra 2048',       xp: 500,  rarity: 'legendary' },
+
+    // ── NEW BLOB ───────────────────────────────────────────
+    { id: 'b_boss_hunter',   cat: 'blob', icon: '🎯', name: 'Boss Hunter',    desc: 'Slay 10 Elemental Bosses in Blob Evolution',  xp: 500,  rarity: 'epic'      },
+    { id: 'b_vortex_surfer', cat: 'blob', icon: '🌀', name: 'Vortex Surfer',  desc: 'Survive 10 Vortex events in Blob Evolution',  xp: 300,  rarity: 'rare'      },
+    { id: 'b_ultra_master',  cat: 'blob', icon: '👑', name: 'Ultra Master',   desc: 'Reach Tier 2 with all 5 Blob forms',         xp: 1000, rarity: 'legendary' },
+
+    // ── NEW BINGO ──────────────────────────────────────────
+    { id: 'bi_lucky_5',      cat: 'bingo', icon: '🍀', name: 'Lucky 5',       desc: 'Win 5 Bingo games in a row',                  xp: 400,  rarity: 'epic'      },
+    { id: 'bi_high_roll_w',  cat: 'bingo', icon: '💎', name: 'High Roller Win', desc: 'Bet 100 coins and win in Bingo',            xp: 300,  rarity: 'rare'      },
 ];
 
 // ════════════════════════════════════════════════════════
@@ -134,6 +164,39 @@ const SHOP_ITEMS = [
         type: 'count',
         lsKey: () => `u2048_random_tiles_${state.nickname}`,
         max: 10,
+    },
+    {
+        id:   'double_xp_weekend',
+        icon: '🎯',
+        name: 'DOUBLE XP WEEKEND',
+        desc: '2× XP for 48 hours (instead of 24h). Stackable with existing boosts!',
+        cost: 75,
+        type: 'timed_48h',
+    },
+    {
+        id:   'prestige_boost',
+        icon: '🌟',
+        name: 'PRESTIGE BOOST',
+        desc: 'Your next prestige in any game grants 2× bonus rewards. One-time use.',
+        cost: 100,
+        type: 'bool',
+        lsKey: 'portal_prestige_boost',
+    },
+    {
+        id:   'event_token',
+        icon: '🎪',
+        name: 'EVENT TOKEN',
+        desc: 'Activates current weekly event bonuses for you for 24h, even off-schedule.',
+        cost: 60,
+        type: 'timed_event',
+    },
+    {
+        id:   'starter_pack',
+        icon: '💫',
+        name: 'STARTER PACK',
+        desc: '3× Snake Revives + 2× Extra Bingo Cards + 5× Random 2048 Tiles. One purchase!',
+        cost: 150,
+        type: 'bundle',
     },
 ];
 
@@ -242,20 +305,25 @@ function readGameStats() {
             games:    parseInt(localStorage.getItem(`voidshift_games_${nick}`))     || 0,
         },
         blob: {
-            best:      parseInt(localStorage.getItem('blobevo_best'))          || 0,
-            games:     parseInt(localStorage.getItem('blobevo_games'))         || 0,
-            king:      (parseInt(localStorage.getItem('blobevo_best')) || 0) >= 5000,
-            survived5: !!localStorage.getItem('blobevo_survived_5min'),
+            best:         parseInt(localStorage.getItem('blobevo_best'))               || 0,
+            games:        parseInt(localStorage.getItem('blobevo_games'))              || 0,
+            king:         (parseInt(localStorage.getItem('blobevo_best')) || 0) >= 5000,
+            survived5:    !!localStorage.getItem('blobevo_survived_5min'),
+            bossKills:    parseInt(localStorage.getItem('blobevo_bosses_killed'))      || 0,
+            vortexCount:  parseInt(localStorage.getItem('blobevo_vortexes_survived'))  || 0,
+            tier2All:     !!localStorage.getItem('blobevo_tier2_all_forms'),
         },
         bingo: {
-            totalWon:      parseInt(localStorage.getItem('bingo_total_won'))      || 0,
-            games:         parseInt(localStorage.getItem('bingo_games'))          || 0,
-            jackpots:      parseInt(localStorage.getItem('bingo_jackpots'))       || 0,
+            totalWon:      parseInt(localStorage.getItem('bingo_total_won'))         || 0,
+            games:         parseInt(localStorage.getItem('bingo_games'))             || 0,
+            jackpots:      parseInt(localStorage.getItem('bingo_jackpots'))          || 0,
             highRoll:      !!localStorage.getItem('bingo_highroller'),
-            luckyStreak:   parseInt(localStorage.getItem('bingo_lucky_streak') || '0'),
+            highRollWin:   !!localStorage.getItem('bingo_highroller_win'),
+            luckyStreak:   parseInt(localStorage.getItem('bingo_lucky_streak')      || '0'),
+            luckyStreak5:  parseInt(localStorage.getItem('bingo_lucky_streak')      || '0') >= 5,
             mpWinRoyal:    !!localStorage.getItem('bingo_mp_win_royal'),
             mpComeback:    !!localStorage.getItem('bingo_mp_comeback'),
-            mpTotalSpent:  parseInt(localStorage.getItem('bingo_mp_total_spent') || '0'),
+            mpTotalSpent:  parseInt(localStorage.getItem('bingo_mp_total_spent')    || '0'),
         },
         tower: {
             bestLevel:parseInt(localStorage.getItem(`tower_best_level_${nick}`))  || 0,
@@ -405,6 +473,40 @@ function checkAchievements(stats) {
             case 'bi_mp_highstakes': met = stats.bingo.mpWinRoyal;                      break;
             case 'bi_mp_comeback':   met = stats.bingo.mpComeback;                      break;
             case 'bi_mp_whale':      met = stats.bingo.mpTotalSpent >= 1000;            break;
+
+            // ── Tower Rush
+            case 't_wave5':    met = stats.tower.bestWave  >= 5;   break;
+            case 't_wave15':   met = stats.tower.bestWave  >= 15;  break;
+            case 't_no_leak':  met = !!localStorage.getItem(`tower_no_damage_10_${state.nickname}`); break;
+            case 't_100kills': met = stats.tower.kills     >= 100; break;
+            case 't_boss':     met = stats.tower.bossKills >= 1;   break;
+
+            // ── New global
+            case 'g_sound_master':  met = parseInt(localStorage.getItem('portal_volume_changes') || '0') >= 10; break;
+            case 'g_stats_nerd':    met = parseInt(localStorage.getItem('portal_stats_visits')    || '0') >= 20; break;
+            case 'g_event_chaser': {
+                const evts = JSON.parse(localStorage.getItem('portal_events_participated') || '[]');
+                met = new Set(evts).size >= 3;
+                break;
+            }
+            case 'g_shop_addict':   met = parseInt(localStorage.getItem('portal_total_purchases') || '0') >= 20; break;
+
+            // ── New snake
+            case 's_speed_demon':  met = !!localStorage.getItem('snake_time_attack_200'); break;
+            case 's_untouchable':  met = !!localStorage.getItem('snake_no_powerup_win'); break;
+
+            // ── New ultra 2048
+            case 'u_prestige_3': met = stats.ultra.prestige  >= 3;     break;
+            case 'u_tile_god':   met = stats.ultra.maxTile   >= 65536; break;
+
+            // ── New blob
+            case 'b_boss_hunter':   met = stats.blob.bossKills   >= 10; break;
+            case 'b_vortex_surfer': met = stats.blob.vortexCount >= 10; break;
+            case 'b_ultra_master':  met = stats.blob.tier2All;           break;
+
+            // ── New bingo
+            case 'bi_lucky_5':     met = stats.bingo.luckyStreak5; break;
+            case 'bi_high_roll_w': met = stats.bingo.highRollWin;  break;
         }
 
         if (met) {
@@ -493,7 +595,12 @@ function renderPage(page) {
         case 'home':         renderHome(stats);         break;
         case 'profile':      renderProfile(stats);      break;
         case 'achievements': renderAchievements(stats); break;
-        case 'stats':        renderStats(stats);        break;
+        case 'stats':
+            // Track stats visits for Stats Nerd achievement
+            { const sv = parseInt(localStorage.getItem('portal_stats_visits') || '0') + 1;
+              localStorage.setItem('portal_stats_visits', String(sv)); }
+            renderStats(stats);
+            break;
         case 'shop':         renderShop();              break;
         case 'settings':     renderSettings();          break;
     }
@@ -624,6 +731,7 @@ function renderHome(stats) {
     renderSpinCTA();
     renderStreakWidget();
     renderEventSection(stats);
+    renderWeeklyEventBanner();
 }
 
 // ════════════════════════════════════════════════════════
@@ -1018,15 +1126,31 @@ function setPortalCoins(v) {
 }
 
 function getShopItemState(item) {
+    function _timerLabel(until) {
+        const secsLeft = Math.ceil((until - Date.now()) / 1000);
+        const h = Math.floor(secsLeft / 3600);
+        const m = Math.floor((secsLeft % 3600) / 60);
+        return `Active — ${h}h ${m}m left`;
+    }
     switch (item.type) {
         case 'timed': {
             const until = parseInt(localStorage.getItem('portal_xp_boost_until') || '0');
             const active = Date.now() < until;
-            if (!active) return { active: false, label: null };
-            const secsLeft = Math.ceil((until - Date.now()) / 1000);
-            const h = Math.floor(secsLeft / 3600);
-            const m = Math.floor((secsLeft % 3600) / 60);
-            return { active: true, label: `Active — ${h}h ${m}m left` };
+            return active ? { active: true, label: _timerLabel(until) } : { active: false, label: null };
+        }
+        case 'timed_48h': {
+            const until = parseInt(localStorage.getItem('portal_xp_boost_until') || '0');
+            const active = Date.now() < until;
+            return active ? { active: true, label: _timerLabel(until) } : { active: false, label: null };
+        }
+        case 'timed_event': {
+            const until = parseInt(localStorage.getItem('portal_event_token_until') || '0');
+            const active = Date.now() < until;
+            return active ? { active: true, label: _timerLabel(until) } : { active: false, label: null };
+        }
+        case 'bundle': {
+            // Bundle can always be purchased (consumable)
+            return { active: false, label: null };
         }
         case 'count': {
             const lsKey = typeof item.lsKey === 'function' ? item.lsKey() : item.lsKey;
@@ -1054,11 +1178,38 @@ function buyShopItem(id) {
 
     switch (item.type) {
         case 'timed': {
-            const now    = Date.now();
-            const cur    = parseInt(localStorage.getItem('portal_xp_boost_until') || '0');
-            const base   = Math.max(now, cur); // stack on existing
+            const now  = Date.now();
+            const cur  = parseInt(localStorage.getItem('portal_xp_boost_until') || '0');
+            const base = Math.max(now, cur);
             localStorage.setItem('portal_xp_boost_until', String(base + 86_400_000));
             addNotification('⚡', 'XP Boost activated! 2× XP for 24 hours.');
+            break;
+        }
+        case 'timed_48h': {
+            const now  = Date.now();
+            const cur  = parseInt(localStorage.getItem('portal_xp_boost_until') || '0');
+            const base = Math.max(now, cur);
+            localStorage.setItem('portal_xp_boost_until', String(base + 2 * 86_400_000));
+            addNotification('🎯', 'Double XP Weekend activated! 2× XP for 48 hours.');
+            break;
+        }
+        case 'timed_event': {
+            const until = Date.now() + 86_400_000;
+            localStorage.setItem('portal_event_token_until', String(until));
+            localStorage.setItem('portal_current_event', getActiveWeeklyEvent().id);
+            addNotification('🎪', 'Event Token activated! Weekly event bonuses active for 24h.');
+            break;
+        }
+        case 'bundle': {
+            const revives = parseInt(localStorage.getItem('snake_revives') || '0');
+            localStorage.setItem('snake_revives', String(revives + 3));
+            const bingoCards = localStorage.getItem('bingo_extra_card');
+            // Give 2 extra cards (store count)
+            const cardCount = parseInt(localStorage.getItem('bingo_extra_cards') || '0');
+            localStorage.setItem('bingo_extra_cards', String(cardCount + 2));
+            const tiles = parseInt(localStorage.getItem(`u2048_random_tiles_${state.nickname}`) || '0');
+            localStorage.setItem(`u2048_random_tiles_${state.nickname}`, String(Math.min(tiles + 5, 10)));
+            addNotification('💫', 'Starter Pack unpacked! 3 Revives + 2 Bingo Cards + 5 Random Tiles.');
             break;
         }
         case 'count': {
@@ -1084,6 +1235,10 @@ function buyShopItem(id) {
             break;
         }
     }
+
+    // Track total purchases for Shop Addict achievement
+    const totalP = parseInt(localStorage.getItem('portal_total_purchases') || '0') + 1;
+    localStorage.setItem('portal_total_purchases', String(totalP));
 
     playSound('claim');
     updateNavBar(readGameStats());
@@ -1857,6 +2012,52 @@ function renderStats(stats) {
         </div>
     `).join('');
 
+    // ── Fun Facts ────────────────────────────────────────
+    const totalApples  = parseInt(localStorage.getItem('snake_total_apples')          || '0');
+    const totalMerges  = parseInt(localStorage.getItem(`u2048_total_merges_${state.nickname}`) || '0');
+    const blobTimeMs   = parseInt(localStorage.getItem('blobevo_total_time_ms')        || '0');
+    const blobHours    = Math.round(blobTimeMs / 3_600_000 * 10) / 10;
+    const totalBets    = stats.bingo.mpTotalSpent;
+    const towerKills   = stats.tower.kills;
+    const statsVisits  = parseInt(localStorage.getItem('portal_stats_visits')          || '0');
+    const shopPurchases= parseInt(localStorage.getItem('portal_total_purchases')        || '0');
+    const totalCoins   = getPortalCoins();
+
+    const facts = [];
+    if (totalApples > 0)   facts.push(`🍎 You've eaten <b>${totalApples}</b> apples in Snake — that snake is VERY well fed!`);
+    if (totalMerges > 0)   facts.push(`🔢 You've made <b>${totalMerges}</b> tile merges in Ultra 2048!`);
+    if (blobHours > 0)     facts.push(`🫧 You've spent <b>${blobHours}h</b> evolving your blob. Absolute unit!`);
+    if (stats.bingo.jackpots > 0) facts.push(`🎰 You've won <b>${stats.bingo.jackpots}</b> Jackpot(s) in Bingo. Lucky!`);
+    if (towerKills > 0)    facts.push(`⚔️ You've eliminated <b>${towerKills}</b> enemies in Tower Rush!`);
+    if (totalGames > 20)   facts.push(`🎮 <b>${totalGames}</b> games played total. That's dedication!`);
+    if (totalCoins > 500)  facts.push(`🪙 You're sitting on <b>${totalCoins}</b> portal coins. Spend wisely!`);
+    if (shopPurchases > 0) facts.push(`🛒 You've made <b>${shopPurchases}</b> shop purchase${shopPurchases > 1 ? 's' : ''}!`);
+    if (stats.streak >= 3) facts.push(`🔥 You're on a <b>${stats.streak}-day</b> streak. Don't break it!`);
+    if (totalBets > 0)     facts.push(`💸 You've wagered <b>${totalBets}</b> coins in Jackpot Bingo!`);
+    if (statsVisits > 1)   facts.push(`📊 You've checked the Stats page <b>${statsVisits}</b> times. Stats nerd confirmed!`);
+
+    // Always show at least a default fact
+    if (facts.length === 0) facts.push(`🎮 Start playing games to see fun stats about your arcade journey!`);
+
+    // Weekly event participation tracking for Event Chaser achievement
+    const evNow = getActiveWeeklyEvent();
+    if (evNow) {
+        const participated = JSON.parse(localStorage.getItem('portal_events_participated') || '[]');
+        if (!participated.includes(evNow.id)) {
+            participated.push(evNow.id);
+            localStorage.setItem('portal_events_participated', JSON.stringify(participated));
+        }
+    }
+
+    const funFactsHtml = `
+        <div class="stats-fun-facts">
+            <h3 class="section-title" style="margin:28px 0 16px">✨ FUN FACTS</h3>
+            <div class="fun-facts-grid">
+                ${facts.slice(0, 6).map(f => `<div class="fun-fact-card">${f}</div>`).join('')}
+            </div>
+        </div>
+    `;
+
     // Records table
     const coins = getPortalCoins();
     document.getElementById('stats-records-table').innerHTML = `
@@ -1872,6 +2073,15 @@ function renderStats(stats) {
         <div class="str-row"><span class="str-icon">💰</span><span class="str-game">Total Coins</span><span class="str-val">${coins} 🪙</span><span class="str-date">–</span></div>
         <div class="str-row"><span class="str-icon">🏆</span><span class="str-game">Achievements</span><span class="str-val">${achUnlocked}/${achTotal}</span><span class="str-date">${achPct}%</span></div>
     `;
+
+    // Append fun facts (create container if needed)
+    let ffEl = document.getElementById('stats-fun-facts-section');
+    if (!ffEl) {
+        ffEl = document.createElement('div');
+        ffEl.id = 'stats-fun-facts-section';
+        document.getElementById('stats-records-section').after(ffEl);
+    }
+    ffEl.innerHTML = funFactsHtml;
 }
 
 // ════════════════════════════════════════════════════════
@@ -1904,8 +2114,22 @@ function playTone(freq, duration, type = 'sine', vol = _soundVol) {
     } catch(e) {}
 }
 
+function toggleNavMute() {
+    if (typeof ArcadeSound !== 'undefined') {
+        const muted = ArcadeSound.toggleMute();
+        const btn = document.getElementById('mute-btn');
+        if (btn) btn.textContent = muted ? '🔇' : '🔊';
+        _soundOn = !muted;
+    }
+}
+
 function playSound(name) {
     if (!_soundOn) return;
+    // Delegate to ArcadeSound engine if available
+    if (typeof ArcadeSound !== 'undefined') {
+        ArcadeSound.play(name);
+        return;
+    }
     switch(name) {
         case 'click':
             playTone(800, 0.06, 'square', 0.15);
@@ -1937,6 +2161,15 @@ function initSounds() {
     _soundOn  = localStorage.getItem('portal_sound') !== 'false';
     _soundVol = (parseInt(localStorage.getItem('portal_volume') || '40')) / 100;
 
+    // Sync ArcadeSound engine
+    if (typeof ArcadeSound !== 'undefined') {
+        ArcadeSound.reload();
+        const muted = localStorage.getItem('portal_muted') === 'true';
+        if (!_soundOn) ArcadeSound.setMuted(true);
+        const muteBtn = document.getElementById('mute-btn');
+        if (muteBtn) muteBtn.textContent = ArcadeSound.isMuted() ? '🔇' : '🔊';
+    }
+
     const toggle = document.getElementById('sound-toggle');
     const slider = document.getElementById('volume-slider');
     const volVal = document.getElementById('vol-val');
@@ -1949,6 +2182,9 @@ function initSounds() {
         toggle.addEventListener('change', () => {
             _soundOn = toggle.checked;
             localStorage.setItem('portal_sound', String(_soundOn));
+            if (typeof ArcadeSound !== 'undefined') ArcadeSound.setMuted(!_soundOn);
+            const muteBtn = document.getElementById('mute-btn');
+            if (muteBtn) muteBtn.textContent = _soundOn ? '🔊' : '🔇';
             if (volRow) volRow.style.opacity = _soundOn ? '1' : '0.4';
             if (_soundOn) playSound('click');
         });
@@ -1958,7 +2194,8 @@ function initSounds() {
         if (volVal) volVal.textContent = slider.value + '%';
         slider.addEventListener('input', () => {
             _soundVol = parseInt(slider.value) / 100;
-            localStorage.setItem('portal_volume', slider.value);
+            if (typeof ArcadeSound !== 'undefined') ArcadeSound.setVolume(_soundVol);
+            else localStorage.setItem('portal_volume', slider.value);
             if (volVal) volVal.textContent = slider.value + '%';
         });
     }
@@ -2463,6 +2700,138 @@ function renderStreakWidget() {
         cell.innerHTML = `<span class="streak-day-icon">${filled ? '🔥' : '○'}</span><span class="streak-day-label">${dayName}</span>`;
         row.appendChild(cell);
     }
+}
+
+// ════════════════════════════════════════════════════════
+// WEEKLY CROSS-GAME EVENTS
+// ════════════════════════════════════════════════════════
+
+const WEEKLY_EVENTS = [
+    {
+        id:    'fire_week',
+        name:  '🔥 SAPTAMANA FOCULUI',
+        icon:  '🔥',
+        color: '#f97316',
+        desc:  'Fire is boosted across ALL games this week!',
+        bonuses: [
+            { game:'blob',  text:'2× XP in Fire form' },
+            { game:'ultra', text:'Red tiles give 2× coins' },
+            { game:'snake', text:'Snake leaves a fire trail' },
+            { game:'tower', text:'Fire towers deal 2× damage' },
+        ],
+    },
+    {
+        id:    'void_night',
+        name:  '🌑 NOAPTEA VOID',
+        icon:  '🌑',
+        color: '#a855f7',
+        desc:  'Void powers amplified across ALL games!',
+        bonuses: [
+            { game:'void',  text:'3× XP in Void Shift' },
+            { game:'blob',  text:'Shadow form enhanced' },
+            { game:'bingo', text:'Void numbers appear more often' },
+            { game:'tower', text:'Shadow towers deal 2× damage' },
+        ],
+    },
+    {
+        id:    'electric_storm',
+        name:  '⚡ FURTUNA ELECTRICA',
+        icon:  '⚡',
+        color: '#eab308',
+        desc:  'Electric energy surges through everything!',
+        bonuses: [
+            { game:'blob',  text:'Storm form boosted' },
+            { game:'ultra', text:'2× combo coins' },
+            { game:'snake', text:'Speed +20%' },
+            { game:'tower', text:'Storm towers chain to 5 enemies' },
+        ],
+    },
+    {
+        id:    'ice_era',
+        name:  '❄️ ERA GHETII',
+        icon:  '❄️',
+        color: '#06b6d4',
+        desc:  'Ice and cold dominate this week!',
+        bonuses: [
+            { game:'blob',  text:'Ice form boosted' },
+            { game:'tower', text:'Slow effects last 2× longer' },
+            { game:'snake', text:'Ghost mode lasts longer' },
+            { game:'bingo', text:'I & N columns appear more' },
+        ],
+    },
+    {
+        id:    'divine_light',
+        name:  '✨ LUMINA DIVINA',
+        icon:  '✨',
+        color: '#fbbf24',
+        desc:  '2× XP in ALL games this entire week!',
+        bonuses: [
+            { game:'blob',  text:'Light form boosted' },
+            { game:'all',   text:'2× XP everywhere' },
+            { game:'snake', text:'Permanent magnet effect' },
+            { game:'tower', text:'Light towers stun for 3 seconds' },
+        ],
+    },
+];
+
+function getActiveWeeklyEvent() {
+    const weekIdx = Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000)) % WEEKLY_EVENTS.length;
+    return WEEKLY_EVENTS[weekIdx];
+}
+
+function getWeeklyEventTimeLeft() {
+    const msPerWeek = 7 * 24 * 60 * 60 * 1000;
+    const weekStart = Math.floor(Date.now() / msPerWeek) * msPerWeek;
+    const diff      = weekStart + msPerWeek - Date.now();
+    const d = Math.floor(diff / 86_400_000);
+    const h = Math.floor((diff % 86_400_000) / 3_600_000);
+    const m = Math.floor((diff % 3_600_000) / 60_000);
+    return d > 0 ? `${d}d ${h}h` : `${h}h ${m}m`;
+}
+
+function _gameIcon(game) {
+    return { snake:'🐍', ultra:'🔢', void:'⚡', blob:'🧬', bingo:'🎰', tower:'🏰', all:'🌟' }[game] || '🎮';
+}
+
+function renderWeeklyEventBanner() {
+    const el = document.getElementById('weekly-event-banner');
+    if (!el) return;
+
+    const ev = getActiveWeeklyEvent();
+
+    // Persist to localStorage so games can read it
+    localStorage.setItem('portal_current_event', ev.id);
+
+    // Track participation for Event Chaser achievement
+    const participated = JSON.parse(localStorage.getItem('portal_events_participated') || '[]');
+    if (!participated.includes(ev.id)) {
+        participated.push(ev.id);
+        localStorage.setItem('portal_events_participated', JSON.stringify(participated));
+    }
+
+    el.style.setProperty('--wev-color', ev.color);
+    el.classList.remove('hidden');
+    el.innerHTML = `
+        <div class="wev-header">
+            <span class="wev-icon">${ev.icon}</span>
+            <div class="wev-body">
+                <div class="wev-name">${ev.name}</div>
+                <div class="wev-desc">${ev.desc}</div>
+            </div>
+            <div class="wev-countdown">
+                <div class="wev-cd-label">ENDS IN</div>
+                <div class="wev-cd-val">${getWeeklyEventTimeLeft()}</div>
+            </div>
+        </div>
+        <div class="wev-bonuses">
+            ${ev.bonuses.map(b => `
+                <div class="wev-bonus">
+                    <span class="wev-bonus-game">${_gameIcon(b.game)}</span>
+                    <span class="wev-bonus-text">${b.text}</span>
+                </div>
+            `).join('')}
+        </div>
+    `;
 }
 
 // ════════════════════════════════════════════════════════

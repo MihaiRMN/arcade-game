@@ -2962,6 +2962,133 @@ html[data-daymode="true"]       .day-preview   { border-color: #c47820; box-shad
 }
 
 /* ══════════════════════════════════════════════════════
+   WEEKLY CROSS-GAME EVENT BANNER
+══════════════════════════════════════════════════════ */
+#weekly-event-banner {
+    --wev-color: #f97316;
+    max-width: 1100px;
+    margin: 0 auto 16px;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--wev-color) 8%, transparent), color-mix(in srgb, var(--wev-color) 4%, transparent));
+    border: 1px solid color-mix(in srgb, var(--wev-color) 50%, transparent);
+    border-radius: var(--radius);
+    padding: 16px 22px;
+    animation: wevPulse 4s ease-in-out infinite alternate;
+}
+@keyframes wevPulse {
+    from { box-shadow: 0 0 12px color-mix(in srgb, var(--wev-color) 15%, transparent); }
+    to   { box-shadow: 0 0 28px color-mix(in srgb, var(--wev-color) 30%, transparent); }
+}
+.wev-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 12px;
+}
+.wev-icon {
+    font-size: 36px;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 8px var(--wev-color));
+    animation: wevIconBounce 2s ease-in-out infinite alternate;
+}
+@keyframes wevIconBounce {
+    from { transform: scale(1)    rotate(-3deg); }
+    to   { transform: scale(1.12) rotate(3deg);  }
+}
+.wev-body { flex: 1; }
+.wev-name {
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    color: var(--wev-color);
+    text-shadow: 0 0 10px var(--wev-color);
+}
+.wev-desc {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    margin-top: 3px;
+}
+.wev-countdown {
+    text-align: right;
+    flex-shrink: 0;
+}
+.wev-cd-label {
+    font-size: 8px;
+    letter-spacing: 3px;
+    color: var(--text-muted);
+}
+.wev-cd-val {
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--wev-color);
+    letter-spacing: 1px;
+}
+.wev-bonuses {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.wev-bonus {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: color-mix(in srgb, var(--wev-color) 8%, var(--bg2));
+    border: 1px solid color-mix(in srgb, var(--wev-color) 30%, transparent);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+}
+.wev-bonus-game { font-size: 14px; }
+
+/* Day mode override */
+html[data-daymode="true"] #weekly-event-banner {
+    background: linear-gradient(135deg, rgba(255,255,255,0.75), rgba(255,248,230,0.85));
+}
+html[data-daymode="true"] .wev-bonus {
+    background: rgba(255,255,255,0.80);
+}
+
+/* ── NAV mute button ── */
+#mute-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    color: var(--text-dim);
+    font-size: 16px;
+    padding: 4px 8px;
+    transition: all var(--transition);
+    flex-shrink: 0;
+    cursor: pointer;
+}
+#mute-btn:hover { border-color: var(--border2); color: var(--text); }
+
+/* ══════════════════════════════════════════════════════
+   STATS — FUN FACTS
+══════════════════════════════════════════════════════ */
+.stats-fun-facts { max-width: 1100px; margin: 0 auto; }
+.fun-facts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+    padding-bottom: 40px;
+}
+.fun-fact-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+    line-height: 1.7;
+    transition: border-color var(--transition), transform var(--transition);
+}
+.fun-fact-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+.fun-fact-card b { color: var(--accent1); font-weight: 900; }
+
+/* ══════════════════════════════════════════════════════
    DAY MODE — EVENT SECTION OVERRIDES
    (base styles use hardcoded rgba(0,0,0,…) backgrounds
     that are invisible on the warm light theme)

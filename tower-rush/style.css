@@ -149,6 +149,50 @@ canvas#game-canvas.merge-targeting { cursor: pointer; }
   box-shadow: 0 4px 16px rgba(185,28,28,0.2);
   animation: bossWarn 0.9s ease infinite alternate;
 }
+
+/* ── Wave Announcement Banner ── */
+#wave-announce {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0.6);
+  background: rgba(4, 14, 12, 0.94);
+  border: 2px solid var(--wann-color, #4ade80);
+  border-radius: 14px;
+  padding: 18px 40px;
+  text-align: center;
+  pointer-events: none;
+  z-index: 500;
+  box-shadow: 0 0 60px var(--wann-glow, rgba(74,222,128,0.4));
+  opacity: 0;
+  transition: none;
+  font-family: 'Courier New', monospace;
+}
+#wave-announce.hidden { display: none !important; }
+#wave-announce.wann-in {
+  animation: wannIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+#wave-announce.wann-out {
+  animation: wannOut 0.35s ease-in forwards;
+}
+#wave-announce .wann-label {
+  font-size: 11px; letter-spacing: 4px; color: var(--wann-color, #4ade80);
+  margin-bottom: 4px; opacity: 0.8;
+}
+#wave-announce .wann-title {
+  font-size: 28px; font-weight: 900; letter-spacing: 4px;
+  color: #fff; text-shadow: 0 0 20px var(--wann-glow, rgba(74,222,128,0.7));
+}
+#wave-announce .wann-sub {
+  font-size: 13px; letter-spacing: 2px;
+  color: var(--wann-color, #4ade80); margin-top: 6px;
+}
+@keyframes wannIn {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.6); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes wannOut {
+  from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  to   { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
+}
 #boss-warning.hidden { display: none; }
 @keyframes bossWarn {
   from { opacity: .65; transform: translateX(-50%) scale(0.98); }
