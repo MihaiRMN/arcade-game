@@ -581,6 +581,11 @@ function getLevel(xp) {
     return 1;
 }
 
+/** Returns total XP for the current player (reads stats from localStorage). */
+function getTotalXP() {
+    return computeXP(readGameStats());
+}
+
 /** Coin multiplier based on level: +5% per level, capped at 3× (level 41). */
 function getCoinMultiplier() {
     const level = getLevel(getTotalXP());
