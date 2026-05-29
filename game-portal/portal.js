@@ -2115,15 +2115,20 @@ function doSpin() {
     spinRunning = true;
     document.getElementById('spin-btn').disabled = true;
 
-    // Pick random result (weighted: jackpot sector is 1/8)
+    // Pick random result
     const resultIdx = Math.floor(Math.random() * SPIN_SECTORS.length);
-    // Target angle: spin at least 5 full rotations + land on result sector CENTER under pointer
-    // Pointer is at top (12 o'clock). Sector center must align there.
-    // Sector i center = angle + (i + 0.5) * arc - π/2  →  set equal to -π/2
-    // → angle = -(i + 0.5) * arc  →  adding full rotations → 2π - (i+0.5)*arc
     const arc = (Math.PI * 2) / SPIN_SECTORS.length;
-    const targetAngle = Math.PI * 2 * (5 + Math.random() * 3) +
-        (Math.PI * 2 - resultIdx * arc) - arc / 2;
+
+    // IMPORTANT: full rotations MUST be an integer so that 2π*N % (2π) = 0 exactly.
+    // If we used (5 + Math.random()*3) the fractional part would add a random offset
+    // that shifts the landing sector unpredictably.
+    const fullRotations = 5 + Math.floor(Math.random() * 4); // integer: 5, 6, 7 or 8
+
+    // For sector `resultIdx` center to land at the pointer (top = -π/2):
+    //   finalAngle + (resultIdx + 0.5)*arc - π/2  =  -π/2  (mod 2π)
+    //   finalAngle  =  2π - (resultIdx + 0.5)*arc
+    const targetAngle = Math.PI * 2 * fullRotations +
+        (Math.PI * 2 - (resultIdx + 0.5) * arc);
 
     let elapsed = 0;
     const duration = 3800; // ms

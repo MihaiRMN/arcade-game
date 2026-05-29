@@ -2961,3 +2961,71 @@ html[data-daymode="true"]       .day-preview   { border-color: #c47820; box-shad
     to   { transform: translateX(110%); opacity: 0; }
 }
 
+/* ══════════════════════════════════════════════════════
+   DAY MODE — EVENT SECTION OVERRIDES
+   (base styles use hardcoded rgba(0,0,0,…) backgrounds
+    that are invisible on the warm light theme)
+══════════════════════════════════════════════════════ */
+html[data-daymode="true"] #event-section {
+    background: linear-gradient(135deg, rgba(255,255,255,0.80), rgba(255,248,230,0.90));
+    box-shadow: 0 0 24px rgba(6,182,212,0.10), inset 0 0 40px rgba(6,182,212,0.03);
+}
+
+html[data-daymode="true"] #event-shards-display {
+    background: rgba(255,255,255,0.80);
+}
+
+html[data-daymode="true"] .ev-quest {
+    background: rgba(255,255,255,0.80);
+    border-color: rgba(0,0,0,0.10);
+}
+html[data-daymode="true"] .ev-quest.ev-claimable {
+    background: rgba(6,182,212,0.07);
+    border-color: var(--ev-color);
+}
+html[data-daymode="true"] .ev-quest.ev-done {
+    background: rgba(34,197,94,0.07);
+    border-color: #22c55e;
+}
+
+html[data-daymode="true"] .ev-quest-progress-bg {
+    background: rgba(0,0,0,0.10);
+}
+
+html[data-daymode="true"] #event-progress-bar-wrap {
+    background: rgba(0,0,0,0.08);
+    border-color: rgba(0,0,0,0.08);
+}
+
+/* ── Streak widget ── */
+html[data-daymode="true"] #streak-widget {
+    background: linear-gradient(135deg, rgba(239,68,68,0.06), rgba(251,146,60,0.04));
+}
+html[data-daymode="true"] .streak-day-icon {
+    background: rgba(0,0,0,0.04);
+    border-color: rgba(0,0,0,0.12);
+}
+html[data-daymode="true"] .streak-day.streak-filled .streak-day-icon {
+    background: rgba(239,68,68,0.12);
+}
+html[data-daymode="true"] .streak-day.streak-today .streak-day-icon {
+    background: rgba(251,146,60,0.16);
+}
+
+/* ── Spin CTA ── */
+html[data-daymode="true"] #spin-cta {
+    background: linear-gradient(135deg, rgba(212,160,23,0.14), rgba(251,191,36,0.07));
+}
+
+/* ── Weekly progress bars ── */
+html[data-daymode="true"] .wp-bar-wrap {
+    background: rgba(0,0,0,0.06);
+}
+
+/* ── Portal toasts ── */
+html[data-daymode="true"] .portal-toast {
+    background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,248,230,0.95));
+    box-shadow: 0 4px 24px rgba(0,0,0,0.15), 0 0 20px rgba(99,102,241,0.06);
+    color: var(--text);
+}
+
