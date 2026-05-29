@@ -380,6 +380,16 @@ function buildHUD() {
   // Canvas events
   canvas.addEventListener('click', onCanvasClick);
   canvas.addEventListener('mousemove', onCanvasHover);
+  // Touch support: tap = click, finger hover shows range preview
+  canvas.addEventListener('touchend', e => {
+      e.preventDefault();
+      const t = e.changedTouches[0];
+      onCanvasClick({ clientX: t.clientX, clientY: t.clientY });
+  }, { passive: false });
+  canvas.addEventListener('touchmove', e => {
+      e.preventDefault();
+      onCanvasHover({ clientX: e.touches[0].clientX, clientY: e.touches[0].clientY });
+  }, { passive: false });
 }
 
 function updateHUD() {

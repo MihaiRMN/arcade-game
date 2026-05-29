@@ -135,6 +135,7 @@ const SHOP_ITEMS = [
         desc: 'Double XP earned in all games for 24 hours. Stackable!',
         cost: 50,
         type: 'timed',   // uses portal_xp_boost_until (timestamp)
+        minLevel: 1,
     },
     {
         id:   'snake_revive',
@@ -145,15 +146,7 @@ const SHOP_ITEMS = [
         type: 'count',
         lsKey: 'snake_revives',
         max: 5,
-    },
-    {
-        id:   'bingo_extra_card',
-        icon: '🎰',
-        name: 'EXTRA BINGO CARD',
-        desc: 'Play with 2 cards in your next Bingo game. Wins paid separately!',
-        cost: 40,
-        type: 'bool',
-        lsKey: 'bingo_extra_card',
+        minLevel: 1,
     },
     {
         id:   'random_tile',
@@ -164,6 +157,26 @@ const SHOP_ITEMS = [
         type: 'count',
         lsKey: () => `u2048_random_tiles_${state.nickname}`,
         max: 10,
+        minLevel: 2,
+    },
+    {
+        id:   'bingo_extra_card',
+        icon: '🎰',
+        name: 'EXTRA BINGO CARD',
+        desc: 'Play with 2 cards in your next Bingo game. Wins paid separately!',
+        cost: 40,
+        type: 'bool',
+        lsKey: 'bingo_extra_card',
+        minLevel: 3,
+    },
+    {
+        id:   'starter_pack',
+        icon: '💫',
+        name: 'STARTER PACK',
+        desc: '3× Snake Revives + 2× Extra Bingo Cards + 5× Random 2048 Tiles. One purchase!',
+        cost: 150,
+        type: 'bundle',
+        minLevel: 4,
     },
     {
         id:   'double_xp_weekend',
@@ -172,6 +185,16 @@ const SHOP_ITEMS = [
         desc: '2× XP for 48 hours (instead of 24h). Stackable with existing boosts!',
         cost: 75,
         type: 'timed_48h',
+        minLevel: 5,
+    },
+    {
+        id:   'event_token',
+        icon: '🎪',
+        name: 'EVENT TOKEN',
+        desc: 'Activates current weekly event bonuses for you for 24h, even off-schedule.',
+        cost: 60,
+        type: 'timed_event',
+        minLevel: 6,
     },
     {
         id:   'prestige_boost',
@@ -181,22 +204,7 @@ const SHOP_ITEMS = [
         cost: 100,
         type: 'bool',
         lsKey: 'portal_prestige_boost',
-    },
-    {
-        id:   'event_token',
-        icon: '🎪',
-        name: 'EVENT TOKEN',
-        desc: 'Activates current weekly event bonuses for you for 24h, even off-schedule.',
-        cost: 60,
-        type: 'timed_event',
-    },
-    {
-        id:   'starter_pack',
-        icon: '💫',
-        name: 'STARTER PACK',
-        desc: '3× Snake Revives + 2× Extra Bingo Cards + 5× Random 2048 Tiles. One purchase!',
-        cost: 150,
-        type: 'bundle',
+        minLevel: 8,
     },
 ];
 
@@ -363,26 +371,38 @@ function checkDailyLogin() {
     const idx     = Math.min(newStreak - 1, DAILY_REWARDS.length - 1);
     const reward  = DAILY_REWARDS[idx];
 
+    // Apply level-based coin multiplier
+    const mult       = getCoinMultiplier();
+    const bonusCoins = Math.round(reward.coins * mult);
+
     // Award bonus XP
     const bonusXP = parseInt(localStorage.getItem('portal_bonus_xp') || '0');
     localStorage.setItem('portal_bonus_xp', String(bonusXP + reward.xp));
 
-    // Award coins → sync with 2048
+    // Award coins (with level multiplier) → sync with 2048
     const coins = parseInt(localStorage.getItem(`u2048_coins_${state.nickname}`) || '0');
-    localStorage.setItem(`u2048_coins_${state.nickname}`, String(coins + reward.coins));
+    localStorage.setItem(`u2048_coins_${state.nickname}`, String(coins + bonusCoins));
 
     addNotification('🎁', `Daily reward ready! Day ${newStreak} streak.`);
-    showDailyPopup(newStreak, reward);
+    showDailyPopup(newStreak, reward, bonusCoins, mult);
     setTimeout(() => {
-        showPortalToast(`🔥 Day ${newStreak} streak! +${reward.xp} XP & +${reward.coins} 🪙`, '🎁', 'streak');
+        showPortalToast(`🔥 Day ${newStreak} streak! +${reward.xp} XP & +${bonusCoins} 🪙${mult > 1 ? ` (lvl bonus!)` : ''}`, '🎁', 'streak');
     }, 800);
 }
 
-function showDailyPopup(streak, reward) {
+function showDailyPopup(streak, reward, bonusCoins, mult) {
+    const actualCoins = bonusCoins !== undefined ? bonusCoins : reward.coins;
+    const m           = mult !== undefined ? mult : 1;
     document.getElementById('dr-streak-num').textContent = streak;
     document.getElementById('dr-xp').textContent         = reward.xp;
-    document.getElementById('dr-coins').textContent      = reward.coins;
+    document.getElementById('dr-coins').textContent      = actualCoins;
     document.getElementById('dr-special').classList.toggle('hidden', !reward.special);
+    // Show multiplier badge if level bonus applied
+    const multEl = document.getElementById('dr-mult');
+    if (multEl) {
+        multEl.textContent = m > 1 ? `×${m.toFixed(2).replace(/\.?0+$/, '')} LVL BONUS` : '';
+        multEl.classList.toggle('hidden', m <= 1);
+    }
 
     const popup = document.getElementById('daily-popup');
     popup.classList.remove('hidden');
@@ -559,6 +579,17 @@ function getLevel(xp) {
         if (xp >= XP_THRESHOLDS[i]) return i + 1;
     }
     return 1;
+}
+
+/** Coin multiplier based on level: +5% per level, capped at 3× (level 41). */
+function getCoinMultiplier() {
+    const level = getLevel(getTotalXP());
+    return Math.min(3.0, 1 + (level - 1) * 0.05);
+}
+
+/** Format multiplier for display e.g. "×1.35" */
+function fmtMult(m) {
+    return m === 1 ? '' : ` ×${m.toFixed(2).replace(/\.?0+$/, '')}`;
 }
 
 function getLevelProgress(xp) {
@@ -1169,6 +1200,13 @@ function getShopItemState(item) {
 function buyShopItem(id) {
     const item   = SHOP_ITEMS.find(i => i.id === id);
     if (!item) return;
+    // Level requirement check
+    const curLevel = getLevel(getTotalXP());
+    if (item.minLevel && curLevel < item.minLevel) {
+        showNotification(`Unlocks at Level ${item.minLevel}! You are Level ${curLevel}.`, '🔒');
+        playSound('error');
+        return;
+    }
     const coins  = getPortalCoins();
     if (coins < item.cost) {
         showNotification(`Need ${item.cost - coins} more coins!`, '❌');
@@ -1250,6 +1288,17 @@ function renderShop() {
     const balEl    = document.getElementById('shop-balance-val');
     if (balEl) balEl.textContent = `${coins} 🪙`;
 
+    // Show level multiplier info
+    const mult   = getCoinMultiplier();
+    const level  = getLevel(getTotalXP());
+    const multEl = document.getElementById('shop-lvl-mult');
+    if (multEl) {
+        multEl.textContent = mult > 1
+            ? `🎖️ LVL ${level} Bonus: ×${mult.toFixed(2).replace(/\.?0+$/, '')} on all daily rewards`
+            : `Reach higher levels for coin multiplier bonuses!`;
+        multEl.style.color = mult > 1 ? '#4ade80' : '#64748b';
+    }
+
     const grid = document.getElementById('portal-shop-grid');
     if (!grid) return;
 
@@ -1259,6 +1308,19 @@ function renderShop() {
         const lsKey   = typeof item.lsKey === 'function' ? item.lsKey() : (item.lsKey || '');
         const count   = item.type === 'count' ? (parseInt(localStorage.getItem(lsKey) || '0')) : 0;
         const maxed   = item.type === 'count' && count >= item.max;
+        const locked  = item.minLevel && level < item.minLevel;
+
+        if (locked) {
+            return `
+            <div class="portal-shop-card card-locked">
+                <div class="psc-lock-overlay">🔒 UNLOCK AT LEVEL ${item.minLevel}</div>
+                <div class="psc-icon" style="opacity:0.35">${item.icon}</div>
+                <div class="psc-name" style="opacity:0.35">${item.name}</div>
+                <div class="psc-desc" style="opacity:0.3">${item.desc}</div>
+                <div class="psc-cost" style="opacity:0.35">${item.cost} 🪙</div>
+                <div class="psc-lvl-needed">Requires Level ${item.minLevel} — you are Level ${level}</div>
+            </div>`;
+        }
 
         let btnClass = 'shop-buy-btn';
         let btnText  = `BUY — ${item.cost} 🪙`;
@@ -1834,11 +1896,13 @@ function claimDailyChallenge(i) {
     const bonusXP = parseInt(localStorage.getItem('portal_bonus_xp') || '0');
     localStorage.setItem('portal_bonus_xp', String(bonusXP + DC_REWARD_XP));
 
-    // Award coins
-    setPortalCoins(getPortalCoins() + DC_REWARD_COINS);
+    // Award coins with level multiplier
+    const dcMult   = getCoinMultiplier();
+    const dcCoins  = Math.round(DC_REWARD_COINS * dcMult);
+    setPortalCoins(getPortalCoins() + dcCoins);
 
     playSound('claim');
-    addNotification('🎯', `Daily challenge complete! +${DC_REWARD_XP} XP · +${DC_REWARD_COINS} 🪙`);
+    addNotification('🎯', `Daily challenge complete! +${DC_REWARD_XP} XP · +${dcCoins} 🪙${dcMult > 1 ? ` (×${dcMult.toFixed(2).replace(/\.?0+$/,'')} lvl)` : ''}`);
     refreshAll();
     renderDailyChallenges();
 }
@@ -2112,6 +2176,16 @@ function playTone(freq, duration, type = 'sine', vol = _soundVol) {
         osc.start(ctx.currentTime);
         osc.stop(ctx.currentTime + duration);
     } catch(e) {}
+}
+
+function toggleMobileNav() {
+    const nav = document.getElementById('mobile-nav');
+    if (nav) nav.classList.toggle('open');
+}
+
+function mobileNavGo(page) {
+    toggleMobileNav();
+    navigate(page);
 }
 
 function toggleNavMute() {

@@ -198,6 +198,14 @@ function init() {
 
   canvas.addEventListener('mousemove', e=>{ mouseX=e.clientX; mouseY=e.clientY; });
   canvas.addEventListener('click', ()=>{ if(gameState==='playing') useAbility(); });
+  // Touch: finger drives blob movement, double-tap = ability
+  canvas.addEventListener('touchmove', e=>{
+      mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY;
+      e.preventDefault();
+  }, { passive: false });
+  canvas.addEventListener('touchstart', e=>{
+      mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY;
+  }, { passive: true });
   window.addEventListener('keydown', e=>{
     if ((e.key==='f'||e.key==='F') && gameState==='playing') useAbility();
     if ((e.key==='e'||e.key==='E') && gameState==='playing') tryUltraEvo();

@@ -987,13 +987,18 @@ document.addEventListener('keydown', e => {
 });
 
 let tx, ty;
-document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; });
-document.addEventListener('touchend',   e => {
+document.addEventListener('touchstart', e => {
+    tx = e.touches[0].clientX;
+    ty = e.touches[0].clientY;
+}, { passive: true });
+document.addEventListener('touchend', e => {
     const dx = e.changedTouches[0].clientX - tx;
     const dy = e.changedTouches[0].clientY - ty;
+    if (Math.abs(dx) < 20 && Math.abs(dy) < 20) return; // ignore tiny taps
+    e.preventDefault();
     if (Math.abs(dx) > Math.abs(dy)) move(dx > 0 ? 'right' : 'left');
     else                              move(dy > 0 ? 'down'  : 'up');
-});
+}, { passive: false });
 
 newGameBtn.addEventListener('click',  init);
 restartBtn.addEventListener('click',  init);

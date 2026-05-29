@@ -805,6 +805,36 @@ document.querySelectorAll('.mode-btn').forEach(btn => {
     });
 });
 
+// ── Touch / Swipe controls (mobile) ──────────────────────
+(function() {
+    let tx = 0, ty = 0;
+    const canvas = document.getElementById('gameCanvas');
+    const target = canvas || document;
+
+    target.addEventListener('touchstart', e => {
+        tx = e.touches[0].clientX;
+        ty = e.touches[0].clientY;
+        e.preventDefault();
+    }, { passive: false });
+
+    target.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - tx;
+        const dy = e.changedTouches[0].clientY - ty;
+        const MIN = 20;
+        if (Math.abs(dx) < MIN && Math.abs(dy) < MIN) return;
+        let newDir;
+        if (Math.abs(dx) >= Math.abs(dy)) {
+            newDir = dx > 0 ? { x: 1, y: 0 } : { x: -1, y: 0 };
+        } else {
+            newDir = dy > 0 ? { x: 0, y: 1 } : { x: 0, y: -1 };
+        }
+        if (newDir.x === -direction.x && newDir.y === -direction.y) return;
+        nextDirection = newDir;
+        if (!running) startGame(newDir);
+        e.preventDefault();
+    }, { passive: false });
+})();
+
 // ════════════════════════════════════════════════════════
 // HELPERS
 // ════════════════════════════════════════════════════════

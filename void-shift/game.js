@@ -351,6 +351,13 @@ function spawnParticles(x, y, color, count = 16) {
     }
 }
 
+// Touch → click conversion for mobile
+canvas.addEventListener('touchend', e => {
+    e.preventDefault();
+    const t = e.changedTouches[0];
+    canvas.dispatchEvent(new MouseEvent('click', { clientX: t.clientX, clientY: t.clientY, bubbles: true }));
+}, { passive: false });
+
 // CLICK — simplu si direct
 canvas.addEventListener('click', e => {
     const rect = canvas.getBoundingClientRect();

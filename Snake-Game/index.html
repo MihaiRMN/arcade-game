@@ -10,6 +10,20 @@
     <style>
         html[data-daymode="true"] body { background: #e8f5e9 !important; }
         html[data-daymode="true"] #game-container { background: #e8f5e9 !important; }
+        /* Mobile responsive */
+        @media (max-width: 480px) {
+            #game-container { padding: 0 4px; }
+            #gameCanvas { width: 100% !important; height: auto !important; touch-action: none; }
+            #header-bar { padding: 8px 10px; }
+            #header-bar h1 { font-size: 16px; }
+            #score-board { gap: 6px; }
+            .score-item { min-width: 56px; padding: 6px 8px; }
+            .score-val  { font-size: 18px; }
+            #pre-panel  { padding: 12px; }
+            #mode-btns  { flex-wrap: wrap; gap: 6px; }
+            .mode-btn   { font-size: 11px; padding: 7px 10px; }
+            #skin-grid  { gap: 6px; }
+        }
     </style>
 </head>
 <body>

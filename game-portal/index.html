@@ -29,6 +29,7 @@
             <div class="dr-reward-chip">+<span id="dr-xp">10</span> XP</div>
             <div class="dr-reward-chip coins">+<span id="dr-coins">5</span> 🪙</div>
         </div>
+        <div id="dr-mult" class="hidden"></div>
         <div id="dr-special" class="hidden">🌟 SPECIAL STREAK BONUS!</div>
         <button id="dr-claim-btn">🎁 CLAIM!</button>
         <div id="dr-next">Next reward tomorrow</div>
@@ -49,6 +50,7 @@
             <button class="nav-btn shop-nav-btn" data-page="shop">🛒 SHOP</button>
             <button class="nav-btn" data-page="settings">⚙️ SETTINGS</button>
         </div>
+        <button id="nav-hamburger" onclick="toggleMobileNav()">☰</button>
         <div id="nav-player">
             <button id="mute-btn" title="Toggle sound" onclick="toggleNavMute()">🔊</button>
             <button id="daynight-btn" title="Toggle Day / Night">🌙</button>
@@ -369,6 +371,7 @@
             <span class="shop-bal-label">YOUR BALANCE</span>
             <span id="shop-balance-val">0 🪙</span>
         </div>
+        <div id="shop-lvl-mult"></div>
         <div id="portal-shop-grid"></div>
     </div>
 
@@ -552,6 +555,17 @@
         <div id="event-badge-preview" style="font-size:40px;padding:16px;background:rgba(255,255,255,0.05);border-radius:12px;border:1px solid var(--accent)"></div>
         <button id="event-reward-close" onclick="document.getElementById('event-reward-modal').classList.add('hidden')">🎉 AWESOME!</button>
     </div>
+</div>
+
+<!-- ══════════════════ MOBILE NAV OVERLAY ══════════════════ -->
+<div id="mobile-nav">
+    <button id="mobile-nav-close" onclick="toggleMobileNav()">✕</button>
+    <button class="nav-btn" data-page="home"         onclick="mobileNavGo('home')">🏠 HOME</button>
+    <button class="nav-btn" data-page="profile"      onclick="mobileNavGo('profile')">👤 PROFILE</button>
+    <button class="nav-btn" data-page="achievements" onclick="mobileNavGo('achievements')">🏆 ACHIEVEMENTS</button>
+    <button class="nav-btn" data-page="stats"        onclick="mobileNavGo('stats')">📊 STATS</button>
+    <button class="nav-btn shop-nav-btn" data-page="shop" onclick="mobileNavGo('shop')">🛒 SHOP</button>
+    <button class="nav-btn" data-page="settings"     onclick="mobileNavGo('settings')">⚙️ SETTINGS</button>
 </div>
 
 <script src="sound-engine.js"></script>
