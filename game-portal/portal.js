@@ -755,6 +755,18 @@ function renderHome(stats) {
     document.getElementById('bingo-games').textContent = stats.bingo.games;
     document.getElementById('tower-best').textContent  = stats.tower.bestWave;
     document.getElementById('tower-kills').textContent = stats.tower.kills;
+
+    // Hero chips
+    const totalGames = stats.snake.games + stats.ultra.games + stats.void.games +
+                       stats.blob.games + stats.bingo.games + (stats.tower.games || 0);
+    const totalAchs  = Object.keys(state.achievements || {}).length;
+    const totalCoins = getPortalCoins();
+    const gv = document.getElementById('hchip-games-val');
+    const av = document.getElementById('hchip-ach-val');
+    const cv = document.getElementById('hchip-coins-val');
+    if (gv) gv.textContent = totalGames;
+    if (av) av.textContent = totalAchs;
+    if (cv) cv.textContent = totalCoins;
     showLB(currentLBGame);
     renderSeasonalBanner();
     renderDailyChallenges();

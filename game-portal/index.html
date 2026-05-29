@@ -74,10 +74,146 @@
 
     <!-- ══ PAGE: HOME ══ -->
     <div id="page-home" class="page active">
-        <div class="page-hero">
-            <h1 class="hero-title">ARCADE PORTAL</h1>
-            <p class="hero-sub">5 GAMES · 1 IDENTITY · INFINITE FUN</p>
+
+        <!-- ══ EPIC HERO ══ -->
+        <div id="home-hero">
+            <div class="hero-eyebrow">⚡ ARCADE PORTAL</div>
+            <h1 id="home-hero-title">
+                <span class="ht-line1">PLAY.</span>
+                <span class="ht-line2">EVOLVE.</span>
+                <span class="ht-line3">DOMINATE.</span>
+            </h1>
+            <p id="home-hero-sub">6 handcrafted games · 1 unified identity · infinite competition</p>
+            <div id="home-hero-chips">
+                <div class="hero-chip">🎮 <span id="hchip-games-val">0</span> GAMES PLAYED</div>
+                <div class="hero-chip">🏆 <span id="hchip-ach-val">0</span> ACHIEVEMENTS</div>
+                <div class="hero-chip gold">🪙 <span id="hchip-coins-val">0</span> COINS</div>
+            </div>
         </div>
+
+        <!-- ══ GAMES GRID ══ -->
+        <div class="section-divider"><span class="section-divider-text">🎮 CHOOSE YOUR GAME</span></div>
+
+        <div id="games-grid">
+
+            <div class="game-card snake" onclick="openGame('snake')">
+                <div class="card-glow"></div>
+                <div class="game-tag">CLASSIC</div>
+                <div class="game-emoji">🐍</div>
+                <div class="game-title">SNAKE</div>
+                <div class="game-desc">Classic snake reimagined.<br>Eat, grow, survive.<br>Power-ups &amp; new modes!</div>
+                <div class="game-stats">
+                    <div class="stat">
+                        <span class="stat-label">BEST</span>
+                        <span class="stat-value" id="snake-best">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">GAMES</span>
+                        <span class="stat-value" id="snake-games">0</span>
+                    </div>
+                </div>
+                <button class="play-btn">▶ PLAY</button>
+            </div>
+
+            <div class="game-card ultra" onclick="openGame('ultra')">
+                <div class="card-glow"></div>
+                <div class="game-tag">PUZZLE</div>
+                <div class="game-emoji">🔢</div>
+                <div class="game-title">ULTRA 2048</div>
+                <div class="game-desc">6×6 grid. Infinite tiles.<br>Shop, combos, prestige.<br>Merge to the cosmos!</div>
+                <div class="game-stats">
+                    <div class="stat">
+                        <span class="stat-label">BEST</span>
+                        <span class="stat-value" id="ultra-best">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">COINS</span>
+                        <span class="stat-value" id="ultra-coins">0</span>
+                    </div>
+                </div>
+                <button class="play-btn">▶ PLAY</button>
+            </div>
+
+            <div class="game-card void" onclick="openGame('void')">
+                <div class="card-glow"></div>
+                <div class="game-tag">STRATEGY</div>
+                <div class="game-emoji">⚡</div>
+                <div class="game-title">VOID SHIFT</div>
+                <div class="game-desc">Control forces of the void.<br>Chain merges &amp; reactions.<br>Reach COSMOS!</div>
+                <div class="game-stats">
+                    <div class="stat">
+                        <span class="stat-label">BEST</span>
+                        <span class="stat-value" id="void-best">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">LEVEL</span>
+                        <span class="stat-value" id="void-level">1</span>
+                    </div>
+                </div>
+                <button class="play-btn">▶ PLAY</button>
+            </div>
+
+            <div class="game-card blob" onclick="openGame('blob')">
+                <div class="card-glow"></div>
+                <div class="game-tag">ACTION</div>
+                <div class="game-emoji">🧬</div>
+                <div class="game-title">BLOB EVOLUTION</div>
+                <div class="game-desc">Evolveaza prin forme elementale.<br>Abilitati unice &amp; slabiciuni strategice.<br>6 forme · Combate epic!</div>
+                <div class="game-stats">
+                    <div class="stat">
+                        <span class="stat-label">BEST MASS</span>
+                        <span class="stat-value" id="blob-best">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">GAMES</span>
+                        <span class="stat-value" id="blob-games">0</span>
+                    </div>
+                </div>
+                <button class="play-btn">▶ PLAY</button>
+            </div>
+
+            <div class="game-card bingo" onclick="openGame('bingo')">
+                <div class="card-glow"></div>
+                <div class="game-tag">LUCK</div>
+                <div class="game-emoji">🎰</div>
+                <div class="game-title">ARCADE BINGO</div>
+                <div class="game-desc">Bet coins, win big.<br>Power cards &amp; jackpots!<br>Full house = JACKPOT!</div>
+                <div class="game-stats">
+                    <div class="stat">
+                        <span class="stat-label">COINS WON</span>
+                        <span class="stat-value" id="bingo-best">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">GAMES</span>
+                        <span class="stat-value" id="bingo-games">0</span>
+                    </div>
+                </div>
+                <button class="play-btn">▶ PLAY</button>
+            </div>
+
+            <div class="game-card tower" onclick="openGame('tower')">
+                <div class="card-glow"></div>
+                <div class="game-tag">DEFENSE</div>
+                <div class="game-emoji">🏰</div>
+                <div class="game-title">TOWER RUSH</div>
+                <div class="game-desc">Build elemental towers.<br>Defend your base.<br>Survive 10 waves!</div>
+                <div class="game-stats">
+                    <div class="stat">
+                        <span class="stat-label">BEST WAVE</span>
+                        <span class="stat-value" id="tower-best">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">KILLS</span>
+                        <span class="stat-value" id="tower-kills">0</span>
+                    </div>
+                </div>
+                <button class="play-btn">▶ PLAY</button>
+            </div>
+
+        </div>
+
+        <!-- ══ EVENTS & ACTIVITY ══ -->
+        <div class="section-divider" style="margin-top:40px"><span class="section-divider-text">📅 EVENTS &amp; ACTIVITY</span></div>
 
         <!-- SEASONAL BANNER -->
         <div id="seasonal-banner" class="hidden"></div>
@@ -127,118 +263,6 @@
                 <span id="streak-next-label"></span>
             </div>
             <div id="streak-days-row"></div>
-        </div>
-
-        <div id="games-grid">
-
-            <div class="game-card snake" onclick="openGame('snake')">
-                <div class="card-glow"></div>
-                <div class="game-emoji">🐍</div>
-                <div class="game-title">SNAKE</div>
-                <div class="game-desc">Classic snake reimagined.<br>Eat, grow, survive.<br>Power-ups & moduri noi!</div>
-                <div class="game-stats">
-                    <div class="stat">
-                        <span class="stat-label">BEST</span>
-                        <span class="stat-value" id="snake-best">0</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">GAMES</span>
-                        <span class="stat-value" id="snake-games">0</span>
-                    </div>
-                </div>
-                <button class="play-btn">▶ PLAY</button>
-            </div>
-
-            <div class="game-card ultra" onclick="openGame('ultra')">
-                <div class="card-glow"></div>
-                <div class="game-emoji">🔢</div>
-                <div class="game-title">ULTRA 2048</div>
-                <div class="game-desc">6×6 grid. Infinite tiles.<br>Shop, combos, prestige.<br>Merge to the cosmos!</div>
-                <div class="game-stats">
-                    <div class="stat">
-                        <span class="stat-label">BEST</span>
-                        <span class="stat-value" id="ultra-best">0</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">COINS</span>
-                        <span class="stat-value" id="ultra-coins">0</span>
-                    </div>
-                </div>
-                <button class="play-btn">▶ PLAY</button>
-            </div>
-
-            <div class="game-card void" onclick="openGame('void')">
-                <div class="card-glow"></div>
-                <div class="game-emoji">⚡</div>
-                <div class="game-title">VOID SHIFT</div>
-                <div class="game-desc">Control forces of the void.<br>Chain merges & reactions.<br>Reach COSMOS!</div>
-                <div class="game-stats">
-                    <div class="stat">
-                        <span class="stat-label">BEST</span>
-                        <span class="stat-value" id="void-best">0</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">LEVEL</span>
-                        <span class="stat-value" id="void-level">1</span>
-                    </div>
-                </div>
-                <button class="play-btn">▶ PLAY</button>
-            </div>
-
-            <div class="game-card bingo" onclick="openGame('bingo')">
-                <div class="card-glow"></div>
-                <div class="game-emoji">🎰</div>
-                <div class="game-title">ARCADE BINGO</div>
-                <div class="game-desc">Bet coins, win big.<br>Power cards &amp; jackpots!<br>Full house = JACKPOT!</div>
-                <div class="game-stats">
-                    <div class="stat">
-                        <span class="stat-label">COINS WON</span>
-                        <span class="stat-value" id="bingo-best">0</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">GAMES</span>
-                        <span class="stat-value" id="bingo-games">0</span>
-                    </div>
-                </div>
-                <button class="play-btn">▶ PLAY</button>
-            </div>
-
-            <div class="game-card blob" onclick="openGame('blob')">
-                <div class="card-glow"></div>
-                <div class="game-emoji">🧬</div>
-                <div class="game-title">BLOB EVOLUTION</div>
-                <div class="game-desc">Evolueaza prin forme elementale.<br>Abilitati unice &amp; slabiciuni strategice.<br>6 forme · Combate epic!</div>
-                <div class="game-stats">
-                    <div class="stat">
-                        <span class="stat-label">BEST MASS</span>
-                        <span class="stat-value" id="blob-best">0</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">GAMES</span>
-                        <span class="stat-value" id="blob-games">0</span>
-                    </div>
-                </div>
-                <button class="play-btn">▶ PLAY</button>
-            </div>
-
-            <div class="game-card tower" onclick="openGame('tower')">
-                <div class="card-glow"></div>
-                <div class="game-emoji">🏰</div>
-                <div class="game-title">TOWER RUSH</div>
-                <div class="game-desc">Build elemental towers.<br>Defend your base.<br>Survive 10 waves!</div>
-                <div class="game-stats">
-                    <div class="stat">
-                        <span class="stat-label">BEST WAVE</span>
-                        <span class="stat-value" id="tower-best">0</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">KILLS</span>
-                        <span class="stat-value" id="tower-kills">0</span>
-                    </div>
-                </div>
-                <button class="play-btn">▶ PLAY</button>
-            </div>
-
         </div>
 
         <div id="leaderboard-section">
