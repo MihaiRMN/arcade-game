@@ -628,10 +628,14 @@ setInterval(renderEvoChain, 2000);
 
 /* ── Help modal ──────────────────────────────────────────────── */
 document.getElementById('help-btn').addEventListener('click', () => {
-    document.getElementById('help-modal').classList.remove('hidden');
+    const m = document.getElementById('help-modal');
+    m.classList.remove('hidden');
+    m.style.display = 'flex';
 });
 document.getElementById('help-close').addEventListener('click', () => {
-    document.getElementById('help-modal').classList.add('hidden');
+    const m = document.getElementById('help-modal');
+    m.classList.add('hidden');
+    m.style.display = 'none';
 });
 
 (function () {
